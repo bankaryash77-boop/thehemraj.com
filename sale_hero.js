@@ -42,8 +42,8 @@
     var DEMO_OFFERS = [
         {
             title: 'Flat 5% Off on  Bags',
-            subtitle: 'Orders above 2000 Qty— Limited period offer',
-            badge: '5% Bonus',
+            subtitle: 'Orders above 1000 Qty— Limited period offer',
+            badge: 'Get 30 Bags FREE!',
             image_url: 'img/b2.png',
             link: 'products.html',
             discount_pct: '5',
