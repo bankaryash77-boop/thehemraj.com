@@ -41,7 +41,7 @@
     /* ── Fallback demo data shown when no sheet URL is set ── */
     var DEMO_OFFERS = [
         {
-            title: 'Flat 5% Off on  Bags',
+            title: 'Get 30 Bags FREE!',
             subtitle: 'Orders above 1000 Qty— Limited period offer',
             badge: 'Get 30 Bags FREE!',
             image_url: 'img/b2.png',
