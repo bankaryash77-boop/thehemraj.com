@@ -50,9 +50,9 @@
             active: 'true'
         },
         {
-            title: ' 2% Off on RELIENCE Green ',
-            subtitle: 'RELIENCE Green Colour of Month',
-            badge: '@2% Off',
+            title: ' Get @20 Bags FREE ! ',
+            subtitle: 'Golden YELLOW Colour of Month',
+            badge: 'Get @20 Bags FREE!',
             image_url: 'img/b1.png',
             link: 'products.html',
             discount_pct: '',
