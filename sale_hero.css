@@ -533,8 +533,10 @@ RESPONSIVE
 }
 .sale-btn-whatsapp i { margin-right: 5px; }
 
-/* Offer card WhatsApp button */
-.offer-card { position: relative; display: flex; flex-direction: column; }
+/* Offer card WhatsApp button
+   (base .offer-card layout — background, border, display:flex, etc. —
+   lives in style.css; this only adds what the WhatsApp button needs) */
+.offer-card { position: relative; }
 .offer-card-link { flex: 1; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
 .offer-whatsapp-btn {
     display: flex;
