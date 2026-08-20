@@ -1,0 +1,283 @@
+/* ============================================================
+   PROJECTS CAROUSEL ("Our Work")
+   Self-contained component — every class is prefixed with
+   `projects-` so it cannot collide with existing site styles.
+   Safe to copy/paste into any page along with projects-carousel.js
+   ============================================================ */
+
+.projects-section {
+    /* Layout tokens — tweak here to retune the whole component */
+    --projects-blue: #2563EB;
+    --projects-blue-dark: #1D4ED8;
+    --projects-blue-light: #4F8DF0;
+    --projects-radius: 28px;
+    --projects-card-radius: 16px;
+    --projects-gap: 24px;
+    --projects-bleed: 72px;   /* how far peeking cards spill past the blue panel, desktop */
+
+    box-sizing: border-box;
+    width: 100%;
+    overflow-x: hidden;           /* safety net: peeking cards never cause page scroll */
+    padding: 64px 20px;
+    background: transparent;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.projects-section * {
+    box-sizing: border-box;
+}
+
+/* ── Blue panel ── */
+.projects-container {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 0 64px;
+    border-radius: var(--projects-radius);
+    background: linear-gradient(135deg, var(--projects-blue-light) 0%, var(--projects-blue) 55%, var(--projects-blue-dark) 100%);
+    overflow: visible;            /* lets peeking cards spill outside the panel */
+    box-shadow: 0 20px 45px -15px rgba(29, 78, 216, 0.45);
+}
+
+.projects-header {
+    text-align: center;
+    padding: 0 24px;
+    margin-bottom: 40px;
+}
+
+.projects-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.projects-subtitle {
+    margin: 10px 0 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+    font-weight: 400;
+}
+
+.projects-carousel {
+    position: relative;
+}
+
+/* ── Carousel viewport ──
+   Bleeds `--projects-bleed` px past the blue panel on each side
+   (still inside .projects-container, which has overflow:visible)
+   so neighboring cards spill onto the page background, then get
+   clipped at that bled edge. */
+.projects-viewport {
+    position: relative;
+    overflow: hidden;
+    margin: 0 calc(-1 * var(--projects-bleed));
+    cursor: grab;
+}
+
+.projects-viewport.projects-dragging {
+    cursor: grabbing;
+}
+
+.projects-track {
+    display: flex;
+    gap: var(--projects-gap);
+    will-change: transform;
+    transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.projects-track.projects-no-transition {
+    transition: none;
+}
+
+/* ── Card ── */
+.projects-card {
+    flex: 0 0 auto;
+    width: var(--projects-card-w, 320px);
+    background: #ffffff;
+    border-radius: var(--projects-card-radius);
+    overflow: hidden;
+    box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.25);
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transform: translateY(0) scale(1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.projects-card:hover,
+.projects-card:focus-visible {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 34px -10px rgba(15, 23, 42, 0.35);
+}
+
+.projects-card:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 3px;
+}
+
+.projects-card-img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #f1f5f9;
+}
+
+.projects-card-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+}
+
+.projects-card-name {
+    margin: 0;
+    padding: 16px 14px;
+    text-align: center;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* ── Arrows ── */
+.projects-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--projects-blue-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
+    transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    z-index: 3;
+}
+
+.projects-arrow:hover {
+    background: #ffffff;
+    transform: translateY(-50%) scale(1.06);
+}
+
+.projects-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+}
+
+.projects-arrow-prev {
+    left: 8px;
+}
+
+.projects-arrow-next {
+    right: 8px;
+}
+
+/* ── Dots ── */
+.projects-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.projects-dot {
+    width: 28px;
+    height: 4px;
+    border-radius: 2px;
+    border: none;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background 0.25s ease, width 0.25s ease;
+}
+
+.projects-dot:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.projects-dot.projects-dot-active {
+    background: #ffffff;
+    width: 40px;
+}
+
+/* ============================================================
+   RESPONSIVE — 3 cards desktop / 2 tablet / 1 mobile
+   Card widths are also set via JS (measures the panel at runtime),
+   these act as the source of truth read by projects-carousel.js
+   and as a safe CSS fallback before JS runs.
+   ============================================================ */
+
+/* Desktop (default): 3 cards visible */
+.projects-section {
+    --projects-cards-per-view: 3;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+    .projects-section {
+        --projects-cards-per-view: 2;
+        --projects-bleed: 44px;
+        --projects-gap: 18px;
+    }
+    .projects-container {
+        padding: 48px 0 52px;
+    }
+    .projects-arrow {
+        width: 38px;
+        height: 38px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .projects-section {
+        --projects-cards-per-view: 1;
+        --projects-bleed: 20px;
+        --projects-gap: 14px;
+        padding: 44px 12px;
+    }
+    .projects-container {
+        padding: 40px 0 44px;
+        border-radius: 20px;
+    }
+    .projects-header {
+        margin-bottom: 28px;
+    }
+    .projects-arrow {
+        width: 34px;
+        height: 34px;
+        font-size: 0.8rem;
+    }
+    .projects-arrow-prev { left: 4px; }
+    .projects-arrow-next { right: 4px; }
+    .projects-card-name {
+        font-size: 0.9rem;
+        padding: 14px 12px;
+    }
+    .projects-dots {
+        margin-top: 28px;
+    }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    .projects-track {
+        transition: none;
+    }
+    .projects-card {
+        transition: none;
+    }
+}
