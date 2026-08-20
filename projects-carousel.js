@@ -41,12 +41,17 @@
 
         function measure() {
             cardsPerView = Math.round(readCssNumber('--projects-cards-per-view', 3));
-            gap = readCssNumber('--projects-gap', 24);
+            gap = readCssNumber('--projects-gap', 20);
             bleed = readCssNumber('--projects-bleed', 72);
 
+            var idealWidth = readCssNumber('--projects-card-w-fixed', 300);
             var innerWidth = container.clientWidth; // blue panel's own width
-            cardWidth = (innerWidth - gap * (cardsPerView - 1)) / cardsPerView;
-            if (cardWidth < 160) cardWidth = 160; // sane floor
+            var fillWidth = (innerWidth - gap * (cardsPerView - 1)) / cardsPerView;
+
+            // Prefer the fixed reference width (300px); only shrink below it
+            // when the panel is too narrow to fit cardsPerView cards at that size.
+            cardWidth = Math.min(idealWidth, fillWidth);
+            if (cardWidth < 140) cardWidth = 140; // sane floor
 
             var section = root.closest('.projects-section');
             section.style.setProperty('--projects-card-w', cardWidth + 'px');
@@ -98,6 +103,16 @@
             }
         }
 
+        function updateActiveCard() {
+            // The card visually centered among the visible set gets the
+            // "larger" treatment, matching the reference design.
+            var centerOffset = Math.floor((cardsPerView - 1) / 2);
+            var activeIdx = Math.min(total - 1, index + centerOffset);
+            cards.forEach(function (card, i) {
+                card.classList.toggle('projects-card-active', i === activeIdx);
+            });
+        }
+
         function updateControls() {
             if (prevBtn) prevBtn.disabled = index <= 0;
             if (nextBtn) nextBtn.disabled = index >= maxIndex();
@@ -109,6 +124,7 @@
                     d.classList.toggle('projects-dot-active', i === activePage);
                 });
             }
+            updateActiveCard();
         }
 
         function rebuild() {
@@ -211,10 +227,55 @@
             resizeTimer = setTimeout(rebuild, 150);
         });
 
+        // ── Auto slide ──
+        var autoplayDelay = 4000;
+        var autoplayTimer = null;
+
+        function nextLoop() {
+            // Loop back to the start once the end is reached.
+            if (index >= maxIndex()) {
+                goTo(0, true);
+            } else {
+                goTo(index + 1, true);
+            }
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayTimer = setInterval(nextLoop, autoplayDelay);
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimer) {
+                clearInterval(autoplayTimer);
+                autoplayTimer = null;
+            }
+        }
+
+        function restartAutoplay() {
+            stopAutoplay();
+            startAutoplay();
+        }
+
+        // Pause on hover/focus, and whenever the user interacts manually.
+        root.addEventListener('mouseenter', stopAutoplay);
+        root.addEventListener('mouseleave', startAutoplay);
+        root.addEventListener('focusin', stopAutoplay);
+        root.addEventListener('focusout', startAutoplay);
+
+        if (prevBtn) prevBtn.addEventListener('click', restartAutoplay);
+        if (nextBtn) nextBtn.addEventListener('click', restartAutoplay);
+        viewport.addEventListener('pointerdown', stopAutoplay);
+        viewport.addEventListener('pointerup', restartAutoplay);
+        if (dotsWrap) {
+            dotsWrap.addEventListener('click', restartAutoplay);
+        }
+
         // ── Init ──
         measure();
         buildDots();
         goTo(0, false);
+        startAutoplay();
     }
 
     function init() {
